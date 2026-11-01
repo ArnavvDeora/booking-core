@@ -39,11 +39,27 @@ def test_different_rooms_never_conflict():
     assert len(cal.bookings_for("102")) == 1
 
 
-def test_back_to_back_bookings_conflict():
+def test_back_to_back_booking_after_is_allowed():
     cal = RoomCalendar()
     cal.add(b("101", "Ana", 1, 5))
+    cal.add(b("101", "Ben", 5, 8))
+    assert len(cal.bookings_for("101")) == 2
+
+
+def test_back_to_back_booking_before_is_allowed():
+    cal = RoomCalendar()
+    cal.add(b("101", "Ben", 5, 8))
+    cal.add(b("101", "Ana", 1, 5))
+    assert len(cal.bookings_for("101")) == 2
+
+
+def test_one_night_overlap_still_conflicts():
+    cal = RoomCalendar()
+    cal.add(b("101", "Ana", 3, 7))
     with pytest.raises(BookingConflict):
-        cal.add(b("101", "Ben", 5, 8))
+        cal.add(b("101", "Ben", 6, 9))
+    with pytest.raises(BookingConflict):
+        cal.add(b("101", "Cat", 1, 4))
 
 
 def test_stay_price():
