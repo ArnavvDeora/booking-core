@@ -6,7 +6,8 @@ class BookingConflict(Exception):
 
 
 def overlaps(a: Booking, b: Booking) -> bool:
-    return a.check_in <= b.check_out and b.check_in <= a.check_out
+    # Check-out day may equal the next check-in day (rooms turn over 11:00 -> 15:00).
+    return a.check_in < b.check_out and b.check_in < a.check_out
 
 
 class RoomCalendar:
